@@ -14,7 +14,7 @@ Package.onUse(function (api) {
     api.versionsFrom('1.1.0.2');
     api.addFiles('web-scraper.js', ['server']);
     api.export('Scraper', ['server']);
-    api.use(['mrt:cheerio', 'loupax:url-utils']);
+    api.use(['mrt:cheerio@0.3.2', 'loupax:url-utils@0.0.1']);
     api.addFiles('assets/phantom_driver.js', "server", {isAsset: true});
 });
 
