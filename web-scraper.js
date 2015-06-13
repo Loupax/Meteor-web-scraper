@@ -5,34 +5,34 @@ var getAssetPath = function getAssetPath(packageName, assetPath) {
     assetPath = assetPath || '';
     var meteor_root = Npm.require('fs').realpathSync(process.cwd() + '/../');
 
-    var assets_folder = meteor_root + '/server/assets/packages/'+packageName.replace(':','_')+'/'+assetPath;
+    var assets_folder = meteor_root + '/server/assets/packages/' + packageName.replace(':', '_') + '/' + assetPath;
     return assets_folder;
 };
 
-var ScrapedWebpage = function ScrapedWebpage(url){
+var ScrapedWebpage = function ScrapedWebpage(url) {
     this.init(url);
 };
 ScrapedWebpage.prototype._html;
 ScrapedWebpage.prototype._url;
 ScrapedWebpage.prototype._document;
-ScrapedWebpage.prototype.fetch= function(){
+ScrapedWebpage.prototype.fetch = function () {
     var html = this._html;
     return html;
 };
-ScrapedWebpage.prototype.init = function(url){
+ScrapedWebpage.prototype.init = function (url) {
     var fut = new Future();
     var spawn = Npm.require('child_process').spawn;
 
-	try {
-		var phantom = spawn('phantomjs', [getAssetPath('loupax:web-scraper','assets/phantom_driver.js'), url]);
-	}
-	catch( e){
-		console.error('While spawning phantomjs got the following error: ' + JSON.stringify(e))
-		return
-	}
+    try {
+        var phantom = spawn('phantomjs', [getAssetPath('loupax:web-scraper', 'assets/phantom_driver.js'), url]);
+    }
+    catch (e) {
+        console.error('While spawning phantomjs got the following error: ' + JSON.stringify(e))
+        return
+    }
 
     var dataBucket = [];
-    var errBucket  = [];
+    var errBucket = [];
     phantom.stdout.on('data', Meteor.bindEnvironment(function (data) {
         dataBucket.push(data.toString());
     }));
@@ -53,8 +53,10 @@ ScrapedWebpage.prototype.init = function(url){
     this._document = cheerio.load(this._html);
     return this;
 };
-ScrapedWebpage.prototype.title = function(){ return this._document('title').text();};
-ScrapedWebpage.prototype.getMeta = function(options){
+ScrapedWebpage.prototype.title = function () {
+    return this._document('title').text();
+};
+ScrapedWebpage.prototype.getMeta = function (options) {
     options = _.extend({
         fixRelativePaths: false,
         removeDuplicates: false,
@@ -82,12 +84,12 @@ ScrapedWebpage.prototype.getMeta = function(options){
             metaData.push(attrs);
         }
     });
-    if(options.fixRelativePaths){
-        var domain = this._url.split('/').slice(0,3).join('/')
-        metaData.forEach(function(meta){
+    if (options.fixRelativePaths) {
+        var domain = this._url.split('/').slice(0, 3).join('/')
+        metaData.forEach(function (meta) {
             if (!!meta.property && meta.content && meta.property.split(':').indexOf('image') > -1) {
                 if (meta.content.indexOf('http') !== 0) {
-                    if(meta.content.indexOf('/')[0] === 0) {
+                    if (meta.content.indexOf('/')[0] === 0) {
                         meta.content = domain + meta.content;
                     } else {
                         meta.content = domain + '/' + meta.content;
@@ -100,7 +102,7 @@ ScrapedWebpage.prototype.getMeta = function(options){
 };
 
 Scraper = {
-    create: function ScraperCreate(url){
+    create: function ScraperCreate(url) {
         return new ScrapedWebpage(url);
     },
     /**
@@ -112,7 +114,7 @@ Scraper = {
      * @param options
      * @constructor
      */
-    downloadMetadataImages: function ScraperDownloadMetadataImages(options){
+    downloadMetadataImages: function ScraperDownloadMetadataImages(options) {
         options = _.extend({
             /* Add defaults here */
             imageUrl: '/'
@@ -147,13 +149,14 @@ Scraper = {
                         })
                     });
                     // Make sure the path and the filename are separated by a /
-                    if(options.imageUrl[options.imageUrl.length - 1] === '/'){
+                    if (options.imageUrl[options.imageUrl.length - 1] === '/') {
                         meta.content = options.imageUrl + filename;
-                    }else{
-                        meta.content = options.imageUrl +'/'+ filename;
+                    } else {
+                        meta.content = options.imageUrl + '/' + filename;
                     }
 
-                } catch (e) {}
+                } catch (e) {
+                }
             }
         });
 
