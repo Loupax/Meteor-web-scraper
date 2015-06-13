@@ -23,7 +23,14 @@ ScrapedWebpage.prototype.init = function(url){
     var fut = new Future();
     var spawn = Npm.require('child_process').spawn;
 
-    var phantom = spawn('phantomjs', [getAssetPath('loupax:web-scraper','assets/phantom_driver.js'), url]);
+	try {
+		var phantom = spawn('phantomjs', [getAssetPath('loupax:web-scraper','assets/phantom_driver.js'), url]);
+	}
+	catch( e){
+		console.error('While spawning phantomjs got the following error: ' + JSON.stringify(e))
+		return
+	}
+
     var dataBucket = [];
     var errBucket  = [];
     phantom.stdout.on('data', Meteor.bindEnvironment(function (data) {
