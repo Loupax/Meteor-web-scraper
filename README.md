@@ -15,3 +15,12 @@ How to fetch the HTML of a url:
     
     // Will return an array like [{property: 'image', 'content':'/lol.jpg'}]
 
+Requirements
+============
+It is mandatory to have phantomjs installed on your system.
+
+On Ubuntu, install phantomjs by typing the following command:
+
+```bash
+sudo apt-get install phantomjs
+```
